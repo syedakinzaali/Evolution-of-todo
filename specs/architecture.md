@@ -2,7 +2,7 @@
 
 ## Database
 - Provider: Neon PostgreSQL
-- Connection String: psql 'postgresql://neondb_owner:npg_nBmSDPHE3bs6@ep-orange-dust-aix6kvx2-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
+- Connection String: postgresql://neondb_owner:npg_nBmSDPHE3bs6@ep-orange-dust-aix6kvx2-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
 ## Tech Stack
 - Backend: FastAPI (Python)
 - Frontend: Next.js (TypeScript/React)
