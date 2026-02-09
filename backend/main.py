@@ -90,3 +90,5 @@ def delete_todo(*, session: Session = Depends(get_session), todo_id: int):
     session.delete(todo)
     session.commit()
     return {"ok": True}
+
+    
