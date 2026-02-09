@@ -58,17 +58,12 @@ def create_todo(*, session: Session = Depends(get_session), todo: TodoCreate):
     session.refresh(db_todo)
     return db_todo
 
-@app.get("/todos/", response_model=List[TodoRead])
-def read_todos(offset: int = 0, limit: int = 100, session: Session = Depends(get_session)):
-    todos = session.exec(select(Todo).offset(offset).limit(limit)).all()
-    return todos
-
-@app.get("/todos/{todo_id}", response_model=TodoRead)
-def read_todo(*, todo_id: int, session: Session = Depends(get_session)):
-    todo = session.get(Todo, todo_id)
-    if not todo:
-        raise HTTPException(status_code=404, detail="Todo not found")
-    return todo
+@app.get("/todos/", response_model=list[Todo])
+def read_todos(search: str = None, session: Session = Depends(get_session)):
+    statement = select(Todo)
+    if search:
+        statement = statement.where(Todo.title.contains(search))
+    return session.exec(statement).all()
 
 @app.patch("/todos/{todo_id}", response_model=TodoRead)
 def update_todo(*, session: Session = Depends(get_session), todo_id: int, todo: TodoUpdate):

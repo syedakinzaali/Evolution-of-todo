@@ -32,3 +32,12 @@ Create API endpoints to Add, View, and Delete tasks.
 
 Create a web UI where I can log in and manage my tasks.
 
+## Phase 3: Agentic Enhancements
+- **Feature**: Task Search and Filtering.
+- **Backend**: Update the `GET /todos/` endpoint to accept an optional `search` query parameter.
+- **Logic**: If `search` is provided, return only tasks where the title contains the search string (case-insensitive).
+- **Frontend**: Add a search input field above the task list that triggers the filtered view.
+## Phase 3 Goal: Search Feature
+- The user must be able to search for tasks.
+- Frontend: Add a search input above the task list.
+- Backend: Update the GET endpoint to filter results using a 'search' query parameter.

@@ -13,11 +13,18 @@ export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodoTitle, setNewTodoTitle] = useState('');
   const [loading, setLoading] = useState(true);
+  
+  // 1. ADD THIS LINE HERE (The Search State)
+  const [searchQuery, setSearchQuery] = useState(''); // <--- CHANGE
 
- const API_URL = 'http://127.0.0.1:8000';
+  const API_URL = 'http://127.0.0.1:8000';
+
+  // 2. UPDATE THIS FUNCTION (Added the search parameter)
   const fetchTodos = async () => {
     try {
-   const response = await fetch('http://127.0.0.1:8000/todos/');
+      setLoading(true);
+      // We added `?search=${searchQuery}` to the end of the URL below
+      const response = await fetch(`${API_URL}/todos/?search=${searchQuery}`); // <--- CHANGE
       if (response.ok) {
         const data = await response.json();
         setTodos(data);
@@ -32,16 +39,12 @@ export default function Home() {
   const addTodo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTodoTitle.trim()) return;
-
     try {
-    const response = await fetch('http://127.0.0.1:8000/todos/', {
+      const response = await fetch(`${API_URL}/todos/`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: newTodoTitle, completed: false }),
       });
-
       if (response.ok) {
         const newTodo = await response.json();
         setTodos([...todos, newTodo]);
@@ -56,12 +59,9 @@ export default function Home() {
     try {
       const response = await fetch(`${API_URL}/todos/${todo.id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ completed: !todo.completed }),
       });
-
       if (response.ok) {
         const updatedTodo = await response.json();
         setTodos(todos.map((t) => (t.id === todo.id ? updatedTodo : t)));
@@ -71,20 +71,16 @@ export default function Home() {
     }
   };
 
-const deleteTodo = async (id: number) => {
-  try {
-    // Ensure you use backticks (``) and not single quotes ('')
-    const response = await fetch(`${API_URL}/todos/${id}`, {
-      method: 'DELETE',
-    });
-    if (response.ok) {
-      setTodos(todos.filter(todo => todo.id !== id));
+  const deleteTodo = async (id: number) => {
+    try {
+      const response = await fetch(`${API_URL}/todos/${id}`, { method: 'DELETE' });
+      if (response.ok) {
+        setTodos(todos.filter(todo => todo.id !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting todo:', error);
     }
-  } catch (error) {
-    console.error('Error deleting todo:', error);
-  }
-};
-      
+  };
 
   useEffect(() => {
     fetchTodos();
@@ -109,6 +105,24 @@ const deleteTodo = async (id: number) => {
           Add
         </button>
       </form>
+
+      {/* 3. ADD THIS SECTION HERE (The Search Bar UI) */}
+      <div className="flex gap-2 mb-8 p-4 bg-gray-100 rounded">
+        <input 
+          type="text" 
+          placeholder="Search tasks..." 
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="flex-1 p-2 border rounded text-black"
+        />
+        <button 
+          onClick={fetchTodos} 
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-bold"
+        >
+          Search
+        </button>
+      </div> 
+      {/* --- END OF SEARCH BAR --- */}
 
       {loading ? (
         <p>Loading todos...</p>
@@ -138,10 +152,9 @@ const deleteTodo = async (id: number) => {
               </button>
             </li>
           ))}
-          {todos.length === 0 && <p className="text-gray-500 text-center">No todos yet!</p>}
+          {todos.length === 0 && <p className="text-gray-500 text-center">No todos found!</p>}
         </ul>
       )}
     </main>
   );
 }
-
