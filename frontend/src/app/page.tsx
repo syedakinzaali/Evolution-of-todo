@@ -14,10 +14,10 @@ export default function Home() {
   const [newTodoTitle, setNewTodoTitle] = useState('');
   const [loading, setLoading] = useState(true);
 
-  const API_URL = 'http://127.0.0.1:45316';
+ const API_URL = 'http://127.0.0.1:8000';
   const fetchTodos = async () => {
     try {
-      const response = await fetch(`${API_URL}/todos/`);
+   const response = await fetch('http://127.0.0.1:8000/todos/');
       if (response.ok) {
         const data = await response.json();
         setTodos(data);
@@ -34,7 +34,7 @@ export default function Home() {
     if (!newTodoTitle.trim()) return;
 
     try {
-      const response = await fetch(`${API_URL}/todos/`, {
+    const response = await fetch('http://127.0.0.1:8000/todos/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,19 +71,20 @@ export default function Home() {
     }
   };
 
-  const deleteTodo = async (id: number) => {
-    try {
-      const response = await fetch(`${API_URL}/todos/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        setTodos(todos.filter((t) => t.id !== id));
-      }
-    } catch (error) {
-      console.error('Error deleting todo:', error);
+const deleteTodo = async (id: number) => {
+  try {
+    // Ensure you use backticks (``) and not single quotes ('')
+    const response = await fetch(`${API_URL}/todos/${id}`, {
+      method: 'DELETE',
+    });
+    if (response.ok) {
+      setTodos(todos.filter(todo => todo.id !== id));
     }
-  };
+  } catch (error) {
+    console.error('Error deleting todo:', error);
+  }
+};
+      
 
   useEffect(() => {
     fetchTodos();
